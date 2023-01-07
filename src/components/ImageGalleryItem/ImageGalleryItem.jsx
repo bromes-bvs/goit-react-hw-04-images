@@ -1,54 +1,48 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState } from 'react';
 import Modal from 'components/Modal/Modal';
 
-export default class ImageGalleryItem extends Component {
-  state = {
-    isModalOpen: false,
+export default function ImageGalleryItem({ image, large }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalOpen = () => {
+    toggleModal();
+    window.addEventListener('keydown', handleKeyPress);
   };
 
-  handleModalOpen = () => {
-    this.toggleModal();
-    window.addEventListener('keydown', this.handleKeyPress);
-    // document.body.style.overflow = 'hidden';
-    // document.body.style.height = '100vh';
-  };
-
-  handleBackdropClick = e => {
-    if (e.target.className === 'Overlay') {
-      this.toggleModal();
-      window.removeEventListener('keydown', this.handleKeyPress);
-    }
-  };
-
-  handleKeyPress = e => {
+  const handleKeyPress = e => {
     console.log(e.code);
     if (e.code === 'Escape') {
-      window.removeEventListener('keydown', this.handleKeyPress);
-      this.toggleModal();
+      window.removeEventListener('keydown', handleKeyPress);
+      toggleModal();
     }
   };
 
-  toggleModal = () => {
-    this.setState(prevState => ({ isModalOpen: !prevState.isModalOpen }));
+  // EventListener
+  const handleBackdropClick = e => {
+    if (e.target.className === 'Overlay') {
+      toggleModal();
+      window.removeEventListener('keydown', handleKeyPress);
+    }
   };
 
-  render() {
-    const { image, large } = this.props;
-    return (
-      <li className="ImageGalleryItem">
-        <img
-          className="ImageGalleryItem-image"
-          src={image}
-          alt={large}
-          onClick={this.handleModalOpen}
-        />
-        {this.state.isModalOpen && (
-          <Modal modalLarge={large} onModalClose={this.handleBackdropClick} />
-        )}
-      </li>
-    );
-  }
+  const toggleModal = () => {
+    setIsModalOpen(prevState => !prevState);
+  };
+
+  return (
+    <li className="ImageGalleryItem">
+      <img
+        className="ImageGalleryItem-image"
+        src={image}
+        alt={large}
+        onClick={handleModalOpen}
+      />
+      {isModalOpen && (
+        <Modal modalLarge={large} onModalClose={handleBackdropClick} />
+      )}
+    </li>
+  );
 }
 
 ImageGalleryItem.propTypes = {
