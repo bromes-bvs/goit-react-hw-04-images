@@ -107,6 +107,7 @@ export function App() {
 //       this.toggleLoading();
 //     }, 1000);
 //   };
+
 //   handleLoadMoreClick = async () => {
 //     this.toggleLoading();
 //     const response = await API.addGallery(
